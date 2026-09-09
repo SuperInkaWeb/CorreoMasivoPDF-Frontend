@@ -1,0 +1,46 @@
+<div style="font-family: system-ui, sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto;">
+  <h2>Panel de Automatización SUNAT</h2>
+
+  @if (automatizador.isLoading()) {
+    <p>Cargando datos de sesión...</p>
+  } 
+  @else {
+    @if (!automatizador.isAuthenticated()) {
+      <div style="background-color: #f3f4f6; padding: 1.5rem; border-radius: 8px;">
+        <p>Debes iniciar sesión para gestionar la automatización de correos.</p>
+        <button (click)="automatizador.login()" style="padding: 0.5rem 1rem; cursor: pointer;">
+          Iniciar Sesión con Auth0
+        </button>
+      </div>
+    } 
+    @else {
+      <div style="background-color: #e5e7eb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+        <h3>Usuario: {{ automatizador.user()?.name }}</h3>
+        <p><strong>Email:</strong> {{ automatizador.user()?.email }}</p>
+        <p><strong>Roles:</strong> {{ automatizador.userRoles().join(', ') || 'Sin Rol Asignado' }}</p>
+        
+        <button (click)="automatizador.logout()" style="padding: 0.4rem 0.8rem; cursor: pointer; background-color: #ef4444; color: white; border: none; border-radius: 4px;">
+          Cerrar Sesión
+        </button>
+      </div>
+
+      <!-- Control RBAC con Signals -->
+      @if (automatizador.isAdmin()) {
+        <div style="border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">
+          <h4>Panel Administrativo</h4>
+          
+          <button 
+            (click)="ejecutarProceso()" 
+            [disabled]="automatizador.ejecucionEnProceso()"
+            style="padding: 0.6rem 1.2rem; cursor: pointer; background-color: #059669; color: white; border: none; border-radius: 4px;">
+            {{ automatizador.ejecucionEnProceso() ? 'Procesando...' : 'Iniciar Automatización' }}
+          </button>
+        </div>
+      } @else {
+        <div style="border: 1px solid #f59e0b; padding: 1rem; border-radius: 8px; background-color: #fef3c7;">
+          <p style="margin: 0;"> No cuentas con el rol <strong>Admin</strong> para ejecutar la tarea.</p>
+        </div>
+      }
+    }
+  }
+</div>
