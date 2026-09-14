@@ -16,7 +16,7 @@ export interface AutomatizacionStatus{
 export class Automatizador {
   private http=inject(HttpClient);
   private auth=inject(AuthService);
-  private readonly API_URL='http://localhost:8000/api';
+  private readonly API_URL='https://mpbackendautomatizadorcorreo.onrender.com/api';
 
   readonly user=toSignal(this.auth.user$);
   readonly isAuthenticated=toSignal(this.auth.isAuthenticated$,{initialValue:false});
