@@ -14,7 +14,7 @@ import { take } from 'rxjs';
 export class Linkcorreos {
   public auth = inject(AuthService);
   private router = inject(Router);
-  private readonly API_URL = 'http://localhost:8000/api';
+  private readonly API_URL = 'https://mpbackendautomatizadorcorreo.onrender.com/api';
 
   vincularProveedor(proveedor: 'gmail' | 'outlook'): void {
     // 1. Nos suscribimos al usuario de Auth0 para obtener su ID (sub)

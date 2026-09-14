@@ -40,7 +40,7 @@ export class Dashboarduser implements OnInit {
 
   private http = inject(HttpClient);
   public auth = inject(AuthService);
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'https://mpbackendautomatizadorcorreo.onrender.com/api';
 
   // ID del usuario autenticado (Auth0 / Supabase)
   userId: string = '';
