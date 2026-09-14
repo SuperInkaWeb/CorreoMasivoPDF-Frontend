@@ -30,15 +30,20 @@ export class Automatizador {
 
   readonly isAdmin=computed(()=>this.userRoles().includes('Admin'));
   obtenerEstado():Observable<AutomatizacionStatus>{
-    return this.http.get<AutomatizacionStatus>('${this.API_URL}/estado');
+    return this.http.get<AutomatizacionStatus>(`${this.API_URL}/estado`);
   }
+
+  readonly userId = computed(() => {
+  const userData = this.user();
+  return userData ? userData.sub : null; 
+});
 
   iniciarProceso():Observable<any>{
     this.ejecucionEnProceso.set(true);
-    return this.http.post('${this.API_URL}/iniciar',{});
+    return this.http.post(`${this.API_URL}/iniciar`,{});
   }
   detenerProceso():Observable<any>{
-    return this.http.post('${this.API_URL}/detener',{});
+    return this.http.post(`${this.API_URL}/detener`,{});
   }
 
   login():void{

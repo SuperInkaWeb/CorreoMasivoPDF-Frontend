@@ -1,0 +1,116 @@
+<div class="dashboard-container">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="brand">
+      <span class="badge">SUNAT Engine</span>
+      <span class="divider">/</span>
+      <span class="title">Portal Contable</span>
+    </div>
+    <div class="actions">
+      <button class="btn-secondary" (click)="escanearBandeja()" [disabled]="procesandoCola()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+        @if (procesandoCola()) {
+          Escaneando...
+        } @else {
+          Escanear Correos
+        }
+      </button>
+
+      <button class="btn-secondary" (click)="limpiarTabla()" [disabled]="registros().length === 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      </svg>
+      Limpiar Tabla
+      </button>
+
+      <button class="btn-primary" (click)="descargarExcel()" [disabled]="registros().length === 0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Descargar Excel (.xlsx)
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="content">
+    <div class="section-header">
+      <h2>Comprobantes Procesados</h2>
+      <p>Facturas, boletas y notas de crédito extraídas automáticamente desde tu correo.</p>
+    </div>
+
+    <!--  BARRA DE BÚSQUEDA AGREGADA AQUÍ -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder=" Buscar por RUC o Serie/Número..." 
+        [value]="filtroTexto()" 
+        (input)="actualizarFiltro($event)"
+        class="search-input"
+      />
+    </div>
+
+    <!-- Tabla de Comprobantes -->
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>RUC Emisor</th>
+            <th>Tipo Doc.</th>
+            <th>Serie / Nº</th>
+            <th>IGV</th>
+            <th>Monto Total</th>
+            <th>Estado SUNAT</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            @if (cargando()) {
+            <tr>
+              <td colspan="6" class="empty-state">
+                <p>Cargando información tributaria...</p>
+              </td>
+            </tr>
+          } @else {
+            <!--  CAMBIO AQUÍ: Ahora recorre 'registrosFiltrados()' en lugar de 'registros()' -->
+            @for (reg of registrosFiltrados(); track reg.id) {
+              <tr>
+                <td>{{ reg.ruc_emisor }}</td>
+                <td>@switch (reg.tipo_doc) {
+                  @case ('01') { Factura }
+                  @case ('1')  { Factura }
+                  @case ('03') { Boleta }
+                  @case ('07') { Nota de Crédito }
+                  @case ('08') { Nota de Débito }
+                  @default { {{ reg.tipo_doc }} }
+                }</td>
+                <td>{{ reg.serie_numero }}</td>
+                <td>S/ {{ reg.igv  | number:'1.2-2' }}</td>
+                <td>S/ {{ reg.monto_total | number:'1.2-2' }}</td>
+                <td>
+                  <span [class]="'status-' + reg.estado_sunat.toLowerCase()">
+                    {{ reg.estado_sunat }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <!-- Estado Vacío o Sin Resultados -->
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 2 2h12a2 2 0 0 2 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                  </svg>
+                  <p>No hay comprobantes escaneados aún.</p>
+                  <span>Haz clic en "Escanear Correos" para iniciar la búsqueda en tu bandeja.</span>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>

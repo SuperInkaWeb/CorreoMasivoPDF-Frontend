@@ -1,46 +1,91 @@
-<div style="font-family: system-ui, sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto;">
-  <h2>Panel de Automatización SUNAT</h2>
-
-  @if (automatizador.isLoading()) {
-    <p>Cargando datos de sesión...</p>
-  } 
-  @else {
-    @if (!automatizador.isAuthenticated()) {
-      <div style="background-color: #f3f4f6; padding: 1.5rem; border-radius: 8px;">
-        <p>Debes iniciar sesión para gestionar la automatización de correos.</p>
-        <button (click)="automatizador.login()" style="padding: 0.5rem 1rem; cursor: pointer;">
-          Iniciar Sesión con Auth0
-        </button>
+<div class="page-container">
+  
+  <!-- Panel Izquierdo: Presentación Institucional -->
+  <aside class="hero-panel">
+    <div class="hero-content">
+      <div class="brand-badge">
+        <span class="badge-dot"></span>
+        <span>MOTOR DE EXTRACCIÓN SUNAT</span>
       </div>
-    } 
-    @else {
-      <div style="background-color: #e5e7eb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-        <h3>Usuario: {{ automatizador.user()?.name }}</h3>
-        <p><strong>Email:</strong> {{ automatizador.user()?.email }}</p>
-        <p><strong>Roles:</strong> {{ automatizador.userRoles().join(', ') || 'Sin Rol Asignado' }}</p>
-        
-        <button (click)="automatizador.logout()" style="padding: 0.4rem 0.8rem; cursor: pointer; background-color: #ef4444; color: white; border: none; border-radius: 4px;">
-          Cerrar Sesión
-        </button>
+      
+      <h1 class="hero-title">
+        Procesamiento Automatizado de Correos Electrónicos
+      </h1>
+      
+      <p class="hero-description">
+        Plataforma automatizada diseñada para estudios contables. Extrae, audita y consolida tus facturas y notas en tiempo real.
+      </p>
+
+      <!-- Resumen Estadístico (UI de Confianza) -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">+1,000</span>
+          <span class="stat-label">Comprobantes / min</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Precisión SUNAT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-footer">
+      © SUNAT Engine • Plataforma de Auditoría Contable
+    </div>
+  </aside>
+
+  <!-- Panel Derecho: Acceso y Login -->
+  <main class="login-panel">
+    <div class="login-card">
+      
+      <div class="card-header">
+        <div class="logo-box">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
+        <span class="system-tag">SISTEMA OFICIAL</span>
       </div>
 
-      <!-- Control RBAC con Signals -->
-      @if (automatizador.isAdmin()) {
-        <div style="border: 1px solid #10b981; padding: 1rem; border-radius: 8px;">
-          <h4>Panel Administrativo</h4>
-          
-          <button 
-            (click)="ejecutarProceso()" 
-            [disabled]="automatizador.ejecucionEnProceso()"
-            style="padding: 0.6rem 1.2rem; cursor: pointer; background-color: #059669; color: white; border: none; border-radius: 4px;">
-            {{ automatizador.ejecucionEnProceso() ? 'Procesando...' : 'Iniciar Automatización' }}
-          </button>
+      <div class="card-body">
+        <h2>Iniciar Sesión</h2>
+        <p></p>
+      </div>
+
+      @if (automatizador.isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Verificando credenciales Auth0...</span>
         </div>
       } @else {
-        <div style="border: 1px solid #f59e0b; padding: 1rem; border-radius: 8px; background-color: #fef3c7;">
-          <p style="margin: 0;"> No cuentas con el rol <strong>Admin</strong> para ejecutar la tarea.</p>
-        </div>
+        <button class="btn-primary" (click)="automatizador.login()">
+          <svg class="icon-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          INGRESAR 
+        </button>
       }
-    }
-  }
+
+      <div class="features-list">
+        <div class="feature-item">
+          <span class="dot"></span>
+          <span>Vinculación directa con Gmail / Outlook</span>
+        </div>
+        <div class="feature-item">
+          <span class="dot"></span>
+          <span>Exportación estructurada en Excel (.xlsx)</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        Conexión encriptada SSL • Autenticación Segura
+      </div>
+
+    </div>
+  </main>
+
 </div>

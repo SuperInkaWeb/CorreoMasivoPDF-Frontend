@@ -1,0 +1,73 @@
+<div class="page-container">
+  <!-- Header / Nav -->
+  <header class="navbar">
+    <div class="brand">
+      <span class="badge">SUNAT Engine</span>
+      <span class="divider">/</span>
+      <span class="title">Vinculación de Correo</span>
+    </div>
+    <div class="user-profile">
+      <span class="user-email">{{ (auth.user$ | async)?.email }}</span>
+      <button class="btn-logout" (click)="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="card-hero">
+      <h2>Vincular cuenta de correo</h2>
+      <p class="subtitle">
+        Selecciona el proveedor donde recibes tus comprobantes de pago de la SUNAT para habilitar la extracción automática.
+      </p>
+
+      <div class="status-pill">
+        <span class="dot"></span>
+        Sesión activa: <strong>{{ (auth.user$ | async)?.email }}</strong>
+      </div>
+
+      <!-- Provider Grid -->
+      <div class="providers-grid">
+        <!-- Gmail -->
+        <button class="provider-card gmail" (click)="vincularProveedor('gmail')">
+          <div class="icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20 18V8L12 13L4 8V18H20Z" fill="#EA4335"/>
+              <path d="M20 6H4L12 11L20 6Z" fill="#C5221F"/>
+            </svg>
+          </div>
+          <div class="provider-info">
+            <h3>Vincular con Gmail</h3>
+            <p>Conexión vía OAuth 2.0 </p>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+
+        <!-- Outlook -->
+        <button class="provider-card outlook" (click)="vincularProveedor('outlook')">
+          <div class="icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect width="24" height="24" rx="4" fill="#0078D4"/>
+              <path d="M12 7L17 10.5V16.5L12 13L7 16.5V10.5L12 7Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="provider-info">
+            <h3>Vincular con Outlook</h3>
+            <p>Conexión vía Microsoft </p>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    Sistema de Extracción de Facturas SUNAT 
+  </footer>
+</div>
