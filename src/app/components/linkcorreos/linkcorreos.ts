@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { take } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-linkcorreos',
@@ -14,8 +15,7 @@ import { take } from 'rxjs';
 export class Linkcorreos {
   public auth = inject(AuthService);
   private router = inject(Router);
-  private readonly API_URL = 'https://mpbackendautomatizadorcorreo.onrender.com/api';
-
+  private readonly API_URL = environment.apiUrl;
   vincularProveedor(proveedor: 'gmail' | 'outlook'): void {
     // 1. Nos suscribimos al usuario de Auth0 para obtener su ID (sub)
     this.auth.user$.pipe(take(1)).subscribe((user) => {

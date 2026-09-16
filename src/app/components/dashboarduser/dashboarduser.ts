@@ -6,6 +6,7 @@ import { take } from 'rxjs';
 import { Automatizador } from '../../services/automatizador';
 import * as XLSX from 'xlsx';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface RegistroTributario {
   id: number;
@@ -40,7 +41,7 @@ export class Dashboarduser implements OnInit {
 
   private http = inject(HttpClient);
   public auth = inject(AuthService);
-  private apiUrl = 'https://mpbackendautomatizadorcorreo.onrender.com/api';
+  private apiUrl = environment.apiUrl;
 
   // ID del usuario autenticado (Auth0 / Supabase)
   userId: string = '';
@@ -129,41 +130,56 @@ export class Dashboarduser implements OnInit {
   });
 }
 
-  escanearBandeja(): void {
+ escanearBandeja(): void {
   if (!this.userId) {
     console.warn('Esperando userId de Auth0...');
     return;
   }
 
-  console.log(`Enviando a FastAPI -> ID: ${this.userId} | Proveedor: ${this.provider()}`);
   this.procesandoCola.set(true);
 
-  const url = `${this.apiUrl}/procesar-correos?user_id=${this.userId}&provider=${this.provider()}`;
-  let intervalId: any;
+  const urlPost = `${this.apiUrl}/procesar-correos?user_id=${this.userId}&provider=${this.provider()}`;
+  const urlEstado = `${this.apiUrl}/estado-escaneo?user_id=${this.userId}`;
+  let intervalId: any = null;
 
-  this.httpRaw.post(url, {}).subscribe({
+  // Función para limpiar el intervalo de forma segura
+  const detenerPolling = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    this.procesandoCola.set(false);
+  };
+
+  this.httpRaw.post(urlPost, {}).subscribe({
     next: () => {
-      // 1. Polling: Hace GET cada 3 segundos mientras FastAPI procesa en segundo plano
+      // Polling cada 3 segundos
       intervalId = setInterval(() => {
+        // 1. Refresca la tabla periódicamente para mostrar lo que va llegando
         this.obtenerRegistros();
-      }, 3000);
 
-      // 2. Límite de seguridad: Detiene el polling a los 45 segundos
-      setTimeout(() => {
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
-        this.procesandoCola.set(false);
-        this.obtenerRegistros(); // Consulta final confirmatoria
-      }, 45000);
+        // 2. Consulta el estado real en el backend
+        this.httpRaw.get<{ procesando: boolean }>(urlEstado).subscribe({
+          next: (res) => {
+            if (!res.procesando) {
+              detenerPolling();
+              this.obtenerRegistros(); // Refresco final al terminar
+            }
+          },
+          error: (err) => {
+            console.error('Error al consultar estado:', err);
+            // Si la consulta de estado falla puntualmente por red, NO detendremos el polling de inmediato.
+            // Continuará en el siguiente ciclo de 3s.
+          }
+        });
+      }, 3000);
     },
     error: (err) => {
-      console.error('Error en el servidor al iniciar escaneo:', err);
-      this.procesandoCola.set(false);
+      console.error('Error al iniciar escaneo:', err);
+      detenerPolling();
     }
   });
 }
-
    limpiarTabla(): void {
   // Vacía el estado local (la pantalla), dejando el arreglo de registros en []
   this.registros.set([]);

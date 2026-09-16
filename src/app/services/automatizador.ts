@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AutomatizacionStatus{
   estado:string;
@@ -16,7 +17,7 @@ export interface AutomatizacionStatus{
 export class Automatizador {
   private http=inject(HttpClient);
   private auth=inject(AuthService);
-  private readonly API_URL='https://mpbackendautomatizadorcorreo.onrender.com/api';
+  private readonly API_URL=environment.apiUrl;
 
   readonly user=toSignal(this.auth.user$);
   readonly isAuthenticated=toSignal(this.auth.isAuthenticated$,{initialValue:false});
