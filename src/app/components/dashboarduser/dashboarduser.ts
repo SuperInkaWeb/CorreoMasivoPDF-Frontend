@@ -172,7 +172,7 @@ export class Dashboarduser implements OnInit {
             // Continuará en el siguiente ciclo de 3s.
           }
         });
-      }, 3000);
+      }, 10000);
     },
     error: (err) => {
       console.error('Error al iniciar escaneo:', err);
