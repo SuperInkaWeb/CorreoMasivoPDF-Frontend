@@ -1,5 +1,11 @@
 export const environment = {
 
   production: true,
-  apiUrl: 'https://mpbackendautomatizadorcorreo.onrender.com/api'
+  apiUrl: '',
+  auth0: {
+    domain: '',
+    clientId: '',
+    audience: ''
+  },
+  allowedList: [] as string[]
 };

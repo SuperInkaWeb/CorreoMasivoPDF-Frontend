@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient,withInterceptors } from '@angular/common/http';
 import { provideAuth0,authHttpInterceptorFn } from '@auth0/auth0-angular';
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,19 +12,15 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authHttpInterceptorFn])),
     provideAuth0({
-      domain:'dev-sz4fx5wrtcwh5kdb.us.auth0.com',
-      clientId:'TmvnEHQdUbwLaDvagPdNNqiAvjVyTwjp',
+      domain: environment.auth0.domain,
+      clientId: environment.auth0.clientId,
       authorizationParams:{
         redirect_uri:window.location.origin,
         //audience:'https://automatizador-sunat.com/api',
 
       },
       httpInterceptor:{
-        allowedList:[
-          'https://mpbackendautomatizadorcorreo.onrender.com/*',
-          'http://localhost:8000/*',
-          'http://127.0.0.1:8000/*',
-        ],
+        allowedList: environment.allowedList as any
       },
 
     }),
