@@ -223,6 +223,12 @@ descargarExcel(): void {
     // 5. Disparar la descarga en el navegador
     XLSX.writeFile(libroTrabajo, nombreArchivo);
   }
+
+   logout(): void {
+    this.auth.logout({ logoutParams: { returnTo: window.location.origin } });
+  }
+
+
 }
 
 
